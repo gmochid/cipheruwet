@@ -7,11 +7,11 @@ namespace cipheruwet
 {
     class Engine
     {
-        public static void startEncryption(String sourceFileName, String destinationFileName, String key, String mode)
+        public static void StartEncryption(String sourceFileName, String destinationFileName, String key, String mode)
         {
         }
 
-        public static void startDecryption(String sourceFileName, String destinationFileName, String key)
+        public static void StartDecryption(String sourceFileName, String destinationFileName, String key)
         {
             // Mode is read from the header of the file
         }

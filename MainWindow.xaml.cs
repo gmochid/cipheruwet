@@ -107,7 +107,21 @@ namespace cipheruwet
 
         private void encryptButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO Multihreading
+            try
+            {
+                string sourceFileName = unencryptedFileName.Text;
+                string destinationFileName = encryptionDestinationFileName.Text;
+                string key = encryptionKey.Text;
+                string mode = encryptionMode.Text;
 
+                ShowMessageBox(mode);
+                // Engine.StartEncryption(
+            }
+            catch (Exception exc)
+            {
+                ShowMessageBox(exc.Message);
+            }
         }
 
         private void decryptButton_Click(object sender, RoutedEventArgs e)
