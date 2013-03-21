@@ -21,14 +21,14 @@
                         <ColumnDefinition Width="198" />
                         <ColumnDefinition Width="158*" />
                     </Grid.ColumnDefinitions>
-                    <Label Content="Unencrypted File" Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" Name="label1" VerticalAlignment="Top" Grid.RowSpan="2" Width="111" />
+                    <Label Content="Unencrypted File" Height="28" HorizontalAlignment="Left" Margin="6,2,0,0" Name="label1" VerticalAlignment="Top" Width="111" Grid.RowSpan="2" />
                     <TextBox Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="unencryptedFileName" VerticalAlignment="Top" Width="120" />
                     <TextBox Grid.Column="1" Grid.Row="1" Height="23" HorizontalAlignment="Left" Name="encryptionKey" VerticalAlignment="Top" Width="273" Margin="0,5,0,0" Grid.ColumnSpan="2" />
-                    <Label Content="Key" Grid.Row="1" Grid.RowSpan="2" Height="28" HorizontalAlignment="Left" Margin="6,5,0,0" Name="label2" VerticalAlignment="Top" Width="105" />
+                    <Label Content="Key" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="6,0,0,0" Name="label2" VerticalAlignment="Top" Width="105" />
                     <TextBox Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="encryptionDestinationFileName" VerticalAlignment="Top" Width="120" />
-                    <Label Content="Save As" Grid.Row="2" Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" Name="label3" VerticalAlignment="Top" Width="105" Grid.RowSpan="2" />
-                    <Button Content="Browse" Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="126,6,0,0" Name="browseUnencryptedFileButton" VerticalAlignment="Top" Width="66" />
-                    <Button Content="Browse" Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="126,6,0,0" Name="browseEncryptionDestinationFileButton" VerticalAlignment="Top" Width="66" />
+                    <Label Content="Save As" Grid.Row="2" Height="28" HorizontalAlignment="Left" Margin="6,2,0,0" Name="label3" VerticalAlignment="Top" Width="105" Grid.RowSpan="2" />
+                    <Button Content="Browse" Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="126,6,0,0" Name="browseUnencryptedFileButton" VerticalAlignment="Top" Width="66" Click="browseUnencryptedFileButton_Click" />
+                    <Button Content="Browse" Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="126,6,0,0" Name="browseEncryptionDestinationFileButton" VerticalAlignment="Top" Width="66" Click="browseEncryptionDestinationFileButton_Click" />
                     <Button Content="Encrypt" Grid.Column="1" Grid.Row="3" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="encryptButton" VerticalAlignment="Top" Width="120" />
                     <ProgressBar Height="22" HorizontalAlignment="Left" Margin="126,7,0,0" Name="encryptionProgressBar" VerticalAlignment="Top" Width="147" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" />
                     <Button Content="Open" Grid.Column="2" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="openUnencryptedFileButton" VerticalAlignment="Top" Width="75" />
@@ -48,14 +48,14 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="170*" />
                     </Grid.RowDefinitions>
-                    <Label Content="Encrypted File" Grid.RowSpan="2" Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" Name="label4" VerticalAlignment="Top" Width="111" />
+                    <Label Content="Encrypted File" Height="28" HorizontalAlignment="Left" Margin="6,2,0,0" Name="label4" VerticalAlignment="Top" Width="111" Grid.RowSpan="2" />
                     <TextBox Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="encryptedFileName" VerticalAlignment="Top" Width="120" />
                     <TextBox Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="0,5,0,0" Name="decryptionKey" VerticalAlignment="Top" Width="273" />
-                    <Label Content="Key" Grid.Row="1" Grid.RowSpan="2" Height="28" HorizontalAlignment="Left" Margin="6,5,0,0" Name="label5" VerticalAlignment="Top" Width="105" />
+                    <Label Content="Key" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="6,0,0,0" Name="label5" VerticalAlignment="Top" Width="105" />
                     <TextBox Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="decryptionDestinationFileName" VerticalAlignment="Top" Width="120" />
-                    <Label Content="Save As" Grid.Row="2" Grid.RowSpan="2" Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" Name="label6" VerticalAlignment="Top" Width="105" />
-                    <Button Content="Browse" Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="126,6,0,0" Name="browseEncryptedFileButton" VerticalAlignment="Top" Width="66" />
-                    <Button Content="Browse" Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="126,6,0,0" Name="browseDecryptionDestinationFileButton" VerticalAlignment="Top" Width="66" />
+                    <Label Content="Save As" Grid.Row="2" Height="28" HorizontalAlignment="Left" Margin="6,2,0,0" Name="label6" VerticalAlignment="Top" Width="105" Grid.RowSpan="2" />
+                    <Button Content="Browse" Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="126,6,0,0" Name="browseEncryptedFileButton" VerticalAlignment="Top" Width="66" Click="browseEncryptedFileButton_Click" />
+                    <Button Content="Browse" Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="126,6,0,0" Name="browseDecryptionDestinationFileButton" VerticalAlignment="Top" Width="66" Click="browseDecryptionDestinationFileButton_Click" />
                     <Button Content="Decrypt" Grid.Column="1" Grid.Row="3" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="decryptButton" VerticalAlignment="Top" Width="120" />
                     <ProgressBar Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="3" Height="22" HorizontalAlignment="Left" Margin="126,7,0,0" Name="decryptionProgressBar" VerticalAlignment="Top" Width="147" />
                     <Button Content="Open" Grid.Column="2" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="openEncryptedFileButton" VerticalAlignment="Top" Width="75" />
