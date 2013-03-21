@@ -10,8 +10,8 @@ namespace cipheruwet
     {
         public BlockCipheruwet(byte[] input, byte[] key)
         {
-            input.CopyTo(Input, 0);
-            key.CopyTo(Key, 0);
+            Input = duplicate(input);
+            Key = duplicate(key);
         }
 
         public byte[] encrypt()
@@ -21,7 +21,36 @@ namespace cipheruwet
 
         public byte[] decrypt()
         {
-            return encryptFeistel();
+            return decryptFeistel();
+        }
+
+        private byte[] decryptFeistel()
+        {
+            initialization();
+            byte[] tempCipherA = new byte[SIZE7];
+            byte[] tempCipherB = new byte[SIZE7];
+
+            for (int i = 0; i < FEISTEL_COUNT; i++)
+            {
+                tempCipherB = duplicate(CipherA);
+                tempCipherA = bitwiseXOR(CipherB, new BlockCipheruwetEnDc(Key, CipherA).encrypt());
+
+                CipherA = duplicate(tempCipherA);
+                CipherB = duplicate(tempCipherB);
+            }
+
+            byte[] ret = new byte[SIZE8];
+            int k = 0;
+            for (; k < SIZE7; k++)
+            {
+                ret[k] = CipherA[k];
+            }
+            for (int j = 0; k < SIZE8; k++, j++)
+            {
+                ret[k] = CipherB[j];
+            }
+
+            return ret;
         }
 
         private byte[] encryptFeistel()
@@ -29,19 +58,26 @@ namespace cipheruwet
             initialization();
             byte[] tempCipherA = new byte[SIZE7];
             byte[] tempCipherB = new byte[SIZE7];
-            for (int i = 1; i < FEISTEL_COUNT; i++)
+            for (int i = 0; i < FEISTEL_COUNT; i++)
             {
-                CipherB.CopyTo(tempCipherA, 0);
-                tempCipherB = bitwiseXOR(CipherB, new BlockCipheruwetEnDc(Key, CipherA).encrypt());
+                tempCipherA = duplicate(CipherB);
+                tempCipherB = bitwiseXOR(CipherA, new BlockCipheruwetEnDc(Key, CipherB).encrypt());
 
-                tempCipherA.CopyTo(CipherA, 0);
-                tempCipherB.CopyTo(CipherB, 0);
+                CipherA = duplicate(tempCipherA);
+                CipherB = duplicate(tempCipherB);
             }
-            CipherB = bitwiseXOR(CipherB, new BlockCipheruwetEnDc(Key, CipherA).encrypt());
 
             byte[] ret = new byte[SIZE8];
-            CipherA.CopyTo(ret, 0);
-            CipherB.CopyTo(ret, SIZE7);
+            int k = 0;
+            for (; k < SIZE7; k++)
+            {
+                ret[k] = CipherA[k];
+            }
+            for (int j = 0; k < SIZE8; k++, j++)
+            {
+                ret[k] = CipherB[j];
+            }
+
             return ret;
         }
 
@@ -50,13 +86,15 @@ namespace cipheruwet
             byte[] ret = new byte[A.Length];
             for (int i = 0; i < A.Length; i++)
             {
-                ret[i] = (byte) (A[i] ^ B[i]);
+                ret[i] = (byte)(A[i] ^ B[i]);
             }
             return ret;
         }
 
         private void initialization()
         {
+            CipherA = new byte[SIZE7];
+            CipherB = new byte[SIZE7];
             int i = 0;
             for (; i < SIZE7; i++)
             {
@@ -68,13 +106,23 @@ namespace cipheruwet
             }
         }
 
+        private byte[] duplicate(byte[] x)
+        {
+            byte[] ret = new byte[x.Length];
+            for (int i = 0; i < x.Length; i++)
+            {
+                ret[i] = x[i];
+            }
+            return ret;
+        }
+
         private byte[] Input;
         private byte[] Key;
         private byte[] CipherA;
         private byte[] CipherB;
 
-        public static const int SIZE8 = (1 << 8);
-        public static const int SIZE7 = (1 << 7);
-        public static const int FEISTEL_COUNT = (1 << 4);
+        public const int SIZE8 = (1 << 8);
+        public const int SIZE7 = (1 << 7);
+        public const int FEISTEL_COUNT = (1 << 4);
     }
 }

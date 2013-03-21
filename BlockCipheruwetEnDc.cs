@@ -11,8 +11,9 @@ namespace cipheruwet
     {
         public BlockCipheruwetEnDc(byte[] key, byte[] input)
         {
-            input.CopyTo(Input, 0);
-            key.CopyTo(Key, 0);
+            Input = duplicate(input);
+            Key = duplicate(key);
+
             Table = new byte[SIZE];
             generateRandom(sumKeys());
         }
@@ -57,12 +58,12 @@ namespace cipheruwet
         {
             byte[] cipher = new byte[SIZE];
             byte[] key = new byte[SIZE];
-            input.CopyTo(cipher, 0);
+            cipher = duplicate(input);
             for (int i = 0; i < 8; i++)
-			{
+            {
                 cipher = keyXOR(cipher);
                 Key.Reverse();
-			}
+            }
             return cipher;
         }
 
@@ -71,7 +72,7 @@ namespace cipheruwet
             byte[] cipher = new byte[SIZE];
             for (int i = 0; i < SIZE; i++)
             {
-                cipher[i] = (byte) (input[i] ^ Key[i]);
+                cipher[i] = (byte)(input[i] ^ Key[i]);
             }
             return cipher;
         }
@@ -91,7 +92,7 @@ namespace cipheruwet
                 {
                     x = (x + 1) % SIZE;
                 }
-                Table[x] = (byte) i;
+                Table[x] = (byte)i;
             }
         }
 
@@ -105,11 +106,21 @@ namespace cipheruwet
             return x;
         }
 
+        private byte[] duplicate(byte[] x)
+        {
+            byte[] ret = new byte[x.Length];
+            for (int i = 0; i < x.Length; i++)
+            {
+                ret[i] = x[i];
+            }
+            return ret;
+        }
+
         private byte[] Key;
         private byte[] Input;
 
         private byte[] Table;
 
-        public static const int SIZE = (1 << 7);
+        public const int SIZE = (1 << 7);
     }
 }
