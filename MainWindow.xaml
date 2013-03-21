@@ -29,10 +29,17 @@
                     <Label Content="Save As" Grid.Row="2" Height="28" HorizontalAlignment="Left" Margin="6,2,0,0" Name="label3" VerticalAlignment="Top" Width="105" Grid.RowSpan="2" />
                     <Button Content="Browse" Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="126,6,0,0" Name="browseUnencryptedFileButton" VerticalAlignment="Top" Width="66" Click="browseUnencryptedFileButton_Click" />
                     <Button Content="Browse" Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="126,6,0,0" Name="browseEncryptionDestinationFileButton" VerticalAlignment="Top" Width="66" Click="browseEncryptionDestinationFileButton_Click" />
-                    <Button Content="Encrypt" Grid.Column="1" Grid.Row="3" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="encryptButton" VerticalAlignment="Top" Width="120" />
+                    <Button Content="Encrypt" Grid.Column="1" Grid.Row="3" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="encryptButton" VerticalAlignment="Top" Width="120" Click="encryptButton_Click" />
                     <ProgressBar Height="22" HorizontalAlignment="Left" Margin="126,7,0,0" Name="encryptionProgressBar" VerticalAlignment="Top" Width="147" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" />
                     <Button Content="Open" Grid.Column="2" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="openUnencryptedFileButton" VerticalAlignment="Top" Width="75" />
                     <Button Content="Open" Grid.Column="2" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="1,6,0,0" Name="openEncryptionDestinationFileButton" VerticalAlignment="Top" Width="75" />
+                    <ComboBox Grid.Row="3" Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="comboBox1" VerticalAlignment="Top" Width="105" ItemsSource="{Binding}">
+                        <ComboBoxItem Content="Mode" IsEnabled="False" IsSelected="True" />
+                        <ComboBoxItem Content="ECB" />
+                        <ComboBoxItem Content="CBC" />
+                        <ComboBoxItem Content="CFB" />
+                        <ComboBoxItem Content="OFB" />
+                    </ComboBox>
                 </Grid>
             </TabItem>
             <TabItem Header="Decrypt" Name="decryptTab">
@@ -56,7 +63,7 @@
                     <Label Content="Save As" Grid.Row="2" Height="28" HorizontalAlignment="Left" Margin="6,2,0,0" Name="label6" VerticalAlignment="Top" Width="105" Grid.RowSpan="2" />
                     <Button Content="Browse" Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="126,6,0,0" Name="browseEncryptedFileButton" VerticalAlignment="Top" Width="66" Click="browseEncryptedFileButton_Click" />
                     <Button Content="Browse" Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="126,6,0,0" Name="browseDecryptionDestinationFileButton" VerticalAlignment="Top" Width="66" Click="browseDecryptionDestinationFileButton_Click" />
-                    <Button Content="Decrypt" Grid.Column="1" Grid.Row="3" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="decryptButton" VerticalAlignment="Top" Width="120" />
+                    <Button Content="Decrypt" Grid.Column="1" Grid.Row="3" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="decryptButton" VerticalAlignment="Top" Width="120" Click="decryptButton_Click" />
                     <ProgressBar Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="3" Height="22" HorizontalAlignment="Left" Margin="126,7,0,0" Name="decryptionProgressBar" VerticalAlignment="Top" Width="147" />
                     <Button Content="Open" Grid.Column="2" Height="23" HorizontalAlignment="Left" Margin="0,6,0,0" Name="openEncryptedFileButton" VerticalAlignment="Top" Width="75" />
                     <Button Content="Open" Grid.Column="2" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="1,6,0,0" Name="openDecryptionDestinationFileButton" VerticalAlignment="Top" Width="75" />

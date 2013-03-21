@@ -94,5 +94,15 @@ namespace cipheruwet
         {
             summonSaveDialog(decryptionDestinationFileName, encryptedFileName);
         }
+
+        private void encryptButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void decryptButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
