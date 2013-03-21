@@ -15,7 +15,7 @@ namespace cipheruwet
             Key = duplicate(key);
 
             Table = new byte[SIZE];
-            generateRandom(sumKeys());
+            r = new Random(sumKeyInput());
         }
 
         public byte[] encrypt()
@@ -30,7 +30,7 @@ namespace cipheruwet
 
         private byte[] decryptTransposition(byte[] input)
         {
-            byte[] temp = reverseKey(input);
+            byte[] temp = transposeKey(input);
             byte[] cipher = new byte[SIZE];
 
             for (int i = 0; i < SIZE; i++)
@@ -43,7 +43,7 @@ namespace cipheruwet
 
         private byte[] encryptTransposition(byte[] input)
         {
-            byte[] temp = reverseKey(input);
+            byte[] temp = transposeKey(input);
             byte[] cipher = new byte[SIZE];
 
             for (int i = 0; i < SIZE; i++)
@@ -54,32 +54,35 @@ namespace cipheruwet
             return cipher;
         }
 
-        private byte[] reverseKey(byte[] input)
+        private byte[] transposeKey(byte[] input)
         {
-            byte[] cipher = new byte[SIZE];
-            byte[] key = new byte[SIZE];
-            cipher = duplicate(input);
-            for (int i = 0; i < 8; i++)
+            byte[] cipher = duplicate(input);
+            byte[] key = duplicate(Key);
+            for (int i = 0; i < 7; i++)
             {
-                cipher = keyXOR(cipher);
-                Key.Reverse();
+                cipher = keyXOR(cipher, key);
+                byte[] temp = duplicate(key);
+                generateRandom();
+                for (int j = 0; j < SIZE; j++)
+                {
+                    key[j] = temp[Table[j]];
+                }
             }
             return cipher;
         }
 
-        private byte[] keyXOR(byte[] input)
+        private byte[] keyXOR(byte[] input, byte[] key)
         {
             byte[] cipher = new byte[SIZE];
             for (int i = 0; i < SIZE; i++)
             {
-                cipher[i] = (byte)(input[i] ^ Key[i]);
+                cipher[i] = (byte)(input[i] ^ key[i]);
             }
             return cipher;
         }
 
-        private void generateRandom(int key)
+        private void generateRandom()
         {
-            Random r = new Random(key);
             for (int i = 0; i < SIZE; i++)
             {
                 Table[i] = 0;
@@ -96,12 +99,13 @@ namespace cipheruwet
             }
         }
 
-        private int sumKeys()
+        private int sumKeyInput()
         {
             int x = 0;
             for (int i = 0; i < SIZE; i++)
             {
                 x = (x + Key[i]) % (1 << 16);
+                x = (x + Input[i]) % (1 << 16);
             }
             return x;
         }
@@ -120,6 +124,7 @@ namespace cipheruwet
         private byte[] Input;
 
         private byte[] Table;
+        private Random r;
 
         public const int SIZE = (1 << 7);
     }
