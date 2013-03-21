@@ -26,10 +26,20 @@ namespace cipheruwet
         {
             InitializeComponent();
         }
+        
+        // --- GENERIC UI ---
+        private void ShowMessageBox(string message,
+            MessageBoxButton button = MessageBoxButton.OK,
+            MessageBoxImage icon = MessageBoxImage.Error)
+        {
+            string messageBoxText = message;
+            string caption = "Cipheruwet";
+            MessageBox.Show(messageBoxText, caption, button, icon);
+        }
 
         // --- OPEN FILE UI ---
 
-        private void summonOpenDialog(TextBox target)
+        private void ShowOpenDialog(TextBox target)
         {
             // Instantiate open file dialog
             OpenFileDialog dlg = new OpenFileDialog();
@@ -50,17 +60,17 @@ namespace cipheruwet
 
         private void browseUnencryptedFileButton_Click(object sender, RoutedEventArgs e)
         {
-            summonOpenDialog(unencryptedFileName);
+            ShowOpenDialog(unencryptedFileName);
         }
 
         private void browseEncryptedFileButton_Click(object sender, RoutedEventArgs e)
         {
-            summonOpenDialog(encryptedFileName);
+            ShowOpenDialog(encryptedFileName);
         }
 
         // --- SAVE FILE UI ---
 
-        private void summonSaveDialog(TextBox target, TextBox source = null)
+        private void ShowSaveDialog(TextBox target, TextBox source = null)
         {
             // Source file name
             String sourceDirectoryName = System.IO.Path.GetDirectoryName(source.Text);
@@ -87,12 +97,12 @@ namespace cipheruwet
 
         private void browseEncryptionDestinationFileButton_Click(object sender, RoutedEventArgs e)
         {
-            summonSaveDialog(encryptionDestinationFileName, unencryptedFileName);
+            ShowSaveDialog(encryptionDestinationFileName, unencryptedFileName);
         }
 
         private void browseDecryptionDestinationFileButton_Click(object sender, RoutedEventArgs e)
         {
-            summonSaveDialog(decryptionDestinationFileName, encryptedFileName);
+            ShowSaveDialog(decryptionDestinationFileName, encryptedFileName);
         }
 
         private void encryptButton_Click(object sender, RoutedEventArgs e)
@@ -103,6 +113,46 @@ namespace cipheruwet
         private void decryptButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        // --- READ FILE UI ---
+
+        private void ShowReaderWindow(TextBox target)
+        {
+            string FileName = target.Text;
+            ReaderWindow rw = new ReaderWindow();
+
+            try
+            {
+                rw.LoadFile(FileName);
+                rw.Show();
+                rw.ProcessFile();
+            }
+            catch (Exception e)
+            {
+                rw.Close();
+                ShowMessageBox(e.Message);
+            }
+        }
+
+        private void openUnencryptedFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowReaderWindow(unencryptedFileName);
+        }
+
+        private void openEncryptionDestinationFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowReaderWindow(encryptionDestinationFileName);
+        }
+
+        private void openEncryptedFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowReaderWindow(encryptedFileName);
+        }
+
+        private void openDecryptionDestinationFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowReaderWindow(decryptionDestinationFileName);
         }
     }
 }
