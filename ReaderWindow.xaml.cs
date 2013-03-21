@@ -24,6 +24,13 @@ namespace cipheruwet
         public string Error;
         private bool IsText;
 
+        string[] textExtensions = {".txt", ".text", ".html", ".htm", ".xhtml",
+                                   ".xml", ".plist", ".xaml", ".rdf", ".rss",
+                                   ".atom", ".c", ".h", ".cs", ".cpp", ".java",
+                                   ".py", ".pl", ".php", ".gitignore", ".manifest",
+                                   ".js", ".css", ".asp", ".aspx", ".jsp", ".rb",
+                                   ".rhtml"};
+
         public ReaderWindow(string FileName = null)
         {
             InitializeComponent();
@@ -41,11 +48,9 @@ namespace cipheruwet
                 this.FileName = fileName;
                 Extension = System.IO.Path.GetExtension(fileName);
 
+                Title = System.IO.Path.GetFileName(fileName);
+
                 // Some text file extensions
-                string[] textExtensions = {".txt", ".text", ".html", ".htm", ".xhtml",
-                                       ".xml", ".plist", ".xaml", ".rdf", ".rss",
-                                       ".atom", ".c", ".h", ".cs", ".cpp", ".java",
-                                       ".py", ".pl", ".php"};
 
                 if (textExtensions.Contains(Extension))
                 {
@@ -81,6 +86,21 @@ namespace cipheruwet
                 }
                 else
                 {
+                    FileStream f = File.OpenRead(FileName);
+                    using (BinaryReader br = new BinaryReader(f))
+                    {
+                        int pos = 0;
+                        int length = (int) f.Length;
+
+                        while (pos < length)
+                        {
+                            // Display each byte in hex
+                            byte v = br.ReadByte();
+                            fileContents.AppendText(v.ToString("X2") + " ");
+
+                            pos += sizeof(byte);
+                        }
+                    }
                 }
             }
             else
