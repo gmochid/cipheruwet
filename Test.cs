@@ -11,8 +11,8 @@ namespace cipheruwet
         public static void testBC()
         {
             Random r = new Random();
-            byte[] input = new byte[1 << 8];
-            byte[] key = new byte[1 << 8];
+            byte[] input = new byte[1 << 4];
+            byte[] key = new byte[1 << 4];
             r.NextBytes(input);
             r.NextBytes(key);
 
@@ -33,8 +33,8 @@ namespace cipheruwet
         public static void testBCED()
         {
             Random r = new Random();
-            byte[] input = new byte[1 << 8];
-            byte[] key = new byte[1 << 8];
+            byte[] input = new byte[1 << 4];
+            byte[] key = new byte[1 << 4];
             r.NextBytes(input);
             r.NextBytes(key);
 

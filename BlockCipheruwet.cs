@@ -27,8 +27,8 @@ namespace cipheruwet
         private byte[] decryptFeistel()
         {
             initialization();
-            byte[] tempCipherA = new byte[SIZE7];
-            byte[] tempCipherB = new byte[SIZE7];
+            byte[] tempCipherA = new byte[SIZE3];
+            byte[] tempCipherB = new byte[SIZE3];
 
             for (int i = 0; i < FEISTEL_COUNT; i++)
             {
@@ -39,13 +39,13 @@ namespace cipheruwet
                 CipherB = duplicate(tempCipherB);
             }
 
-            byte[] ret = new byte[SIZE8];
+            byte[] ret = new byte[SIZE4];
             int k = 0;
-            for (; k < SIZE7; k++)
+            for (; k < SIZE3; k++)
             {
                 ret[k] = CipherA[k];
             }
-            for (int j = 0; k < SIZE8; k++, j++)
+            for (int j = 0; k < SIZE4; k++, j++)
             {
                 ret[k] = CipherB[j];
             }
@@ -56,8 +56,8 @@ namespace cipheruwet
         private byte[] encryptFeistel()
         {
             initialization();
-            byte[] tempCipherA = new byte[SIZE7];
-            byte[] tempCipherB = new byte[SIZE7];
+            byte[] tempCipherA = new byte[SIZE3];
+            byte[] tempCipherB = new byte[SIZE3];
             for (int i = 0; i < FEISTEL_COUNT; i++)
             {
                 tempCipherA = duplicate(CipherB);
@@ -67,13 +67,13 @@ namespace cipheruwet
                 CipherB = duplicate(tempCipherB);
             }
 
-            byte[] ret = new byte[SIZE8];
+            byte[] ret = new byte[SIZE4];
             int k = 0;
-            for (; k < SIZE7; k++)
+            for (; k < SIZE3; k++)
             {
                 ret[k] = CipherA[k];
             }
-            for (int j = 0; k < SIZE8; k++, j++)
+            for (int j = 0; k < SIZE4; k++, j++)
             {
                 ret[k] = CipherB[j];
             }
@@ -93,14 +93,14 @@ namespace cipheruwet
 
         private void initialization()
         {
-            CipherA = new byte[SIZE7];
-            CipherB = new byte[SIZE7];
+            CipherA = new byte[SIZE3];
+            CipherB = new byte[SIZE3];
             int i = 0;
-            for (; i < SIZE7; i++)
+            for (; i < SIZE3; i++)
             {
                 CipherA[i] = Input[i];
             }
-            for (int k = 0; i < SIZE8; i++, k++)
+            for (int k = 0; i < SIZE4; i++, k++)
             {
                 CipherB[k] = Input[i];
             }
@@ -121,8 +121,8 @@ namespace cipheruwet
         private byte[] CipherA;
         private byte[] CipherB;
 
-        public const int SIZE8 = (1 << 8);
-        public const int SIZE7 = (1 << 7);
+        public const int SIZE4 = (1 << 4);
+        public const int SIZE3 = (1 << 3);
         public const int FEISTEL_COUNT = (1 << 4);
     }
 }

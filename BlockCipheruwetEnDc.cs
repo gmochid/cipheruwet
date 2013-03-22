@@ -126,6 +126,6 @@ namespace cipheruwet
         private byte[] Table;
         private Random r;
 
-        public const int SIZE = (1 << 7);
+        public const int SIZE = (1 << 3);
     }
 }
