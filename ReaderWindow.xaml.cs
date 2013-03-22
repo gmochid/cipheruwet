@@ -29,7 +29,7 @@ namespace cipheruwet
                                    ".atom", ".c", ".h", ".cs", ".cpp", ".java",
                                    ".py", ".pl", ".php", ".gitignore", ".manifest",
                                    ".js", ".css", ".asp", ".aspx", ".jsp", ".rb",
-                                   ".rhtml"};
+                                   ".rhtml", ".md"};
 
         public ReaderWindow(string FileName = null)
         {
@@ -54,11 +54,11 @@ namespace cipheruwet
 
                 if (textExtensions.Contains(Extension))
                 {
-                    IsText = true;
+                    LoadTextButton.IsDefault = true;
                 }
                 else
                 {
-                    IsText = false;
+                    LoadHexButton.IsDefault = true;
                 }
             }
             else
@@ -107,6 +107,25 @@ namespace cipheruwet
             {
                 throw new Exception("File not found.");
             }
+        }
+
+        private void LoadTextButton_Click(object sender, RoutedEventArgs e)
+        {
+            fileContents.Text = "";
+            IsText = true;
+            ProcessFile();
+        }
+
+        private void LoadHexButton_Click(object sender, RoutedEventArgs e)
+        {
+            fileContents.Text = "";
+            IsText = false;
+            ProcessFile();
+        }
+
+        private void OpenExternallyButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(FileName);
         }
     }
 }

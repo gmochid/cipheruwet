@@ -3,6 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="ReaderWindow" Height="600" Width="600">
     <Grid>
-        <TextBox HorizontalAlignment="Stretch" Name="fileContents" VerticalAlignment="Stretch" Margin="0" IsReadOnly="False" IsReadOnlyCaretVisible="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontFamily="Consolas" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBox HorizontalAlignment="Stretch" Name="fileContents" VerticalAlignment="Stretch" IsReadOnly="False" IsReadOnlyCaretVisible="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontFamily="Consolas" Grid.Row="1" Margin="12,0,12,12" />
+        <Button Content="Load Text" Height="23" HorizontalAlignment="Left" Margin="12" Name="LoadTextButton" VerticalAlignment="Top" Width="75" Click="LoadTextButton_Click" IsDefault="False" />
+        <Button Content="Load Hex" Height="23" HorizontalAlignment="Left" Margin="93,12,0,0" Name="LoadHexButton" VerticalAlignment="Top" Width="75" Click="LoadHexButton_Click" IsDefault="False" />
+        <Button Content="Open Externally" Height="23" HorizontalAlignment="Right" Margin="12" Name="OpenExternallyButton" VerticalAlignment="Top" Width="110" Click="OpenExternallyButton_Click" />
     </Grid>
 </Window>

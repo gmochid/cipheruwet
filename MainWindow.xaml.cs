@@ -174,7 +174,6 @@ namespace cipheruwet
             {
                 rw.LoadFile(FileName);
                 rw.Show();
-                rw.ProcessFile();
             }
             catch (Exception e)
             {
