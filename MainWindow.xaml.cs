@@ -78,7 +78,7 @@ namespace cipheruwet
             String sourceExtension = System.IO.Path.GetExtension(source.Text);
 
             // Instantiate save file dialog
-            OpenFileDialog dlg = new OpenFileDialog();
+            SaveFileDialog dlg = new SaveFileDialog();
             dlg.InitialDirectory = sourceDirectoryName;
             dlg.FileName = "";
             dlg.DefaultExt = sourceExtension;
@@ -114,19 +114,53 @@ namespace cipheruwet
                 string destinationFileName = encryptionDestinationFileName.Text;
                 string key = encryptionKey.Text;
                 string mode = encryptionMode.Text;
+                
+                byte cipherMode;
 
-                ShowMessageBox(mode);
-                // Engine.StartEncryption(
+                switch (mode)
+                {
+                    case "ECB":
+                        cipherMode = Engine.ECB;
+                        break;
+                    case "CBC":
+                        cipherMode = Engine.CBC;
+                        break;
+                    case "CFB":
+                        cipherMode = Engine.CFB;
+                        break;
+                    case "OFB":
+                        cipherMode = Engine.OFB;
+                        break;
+                    default:
+                        throw new Exception("Invalid mode of operation.");
+                }
+
+                Engine.StartEncryption(sourceFileName, destinationFileName, key, cipherMode, 64);
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                ShowMessageBox(exc.Message);
+                Console.WriteLine("\nMessage ---\n{0}", ex.Message);
+                Console.WriteLine("\nHelpLink ---\n{0}", ex.HelpLink);
+                Console.WriteLine("\nSource ---\n{0}", ex.Source);
+                Console.WriteLine("\nStackTrace ---\n{0}", ex.StackTrace);
+                ShowMessageBox(ex.Message);
             }
         }
 
         private void decryptButton_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                string sourceFileName = encryptedFileName.Text;
+                string destinationFileName = decryptionDestinationFileName.Text;
+                string key = decryptionKey.Text;
 
+                Engine.StartDecryption(sourceFileName, destinationFileName, key);
+            }
+            catch (Exception exc)
+            {
+                ShowMessageBox(exc.Message);
+            }
         }
 
         // --- READ FILE UI ---
