@@ -233,21 +233,33 @@ namespace cipheruwet
             // We're done with the header, we can now proceed to the body.
 
             remainingBody = originalFileSize;
+            byte[] previousBlock = initializationVector;
 
             while (readPos < fr.Length)
             {
                 byte[] cipherBuffer = br.ReadBytes(blockSize);
                 byte[] toWrite = new byte[blockSize];
+                byte[] plainBuffer;
+                BlockCipheruwet Cipher;
 
                 // Decrypt the buffer and write to destination file
                 switch (cipherMode)
                 {
                     case ECB:
-                        BlockCipheruwet Cipher = new BlockCipheruwet(cipherBuffer, keyBytes);
-                        byte[] plainBuffer = Cipher.decrypt();
+                        Cipher = new BlockCipheruwet(cipherBuffer, keyBytes);
+                        plainBuffer = Cipher.decrypt();
                         toWrite = plainBuffer;
                         break;
                     case CBC:
+                        Cipher = new BlockCipheruwet(cipherBuffer, keyBytes);
+                        byte[] preXor = Cipher.decrypt();
+                        plainBuffer = XorByteArray(preXor, previousBlock);
+                        toWrite = plainBuffer;
+                        previousBlock = cipherBuffer;
+                        break;
+                    case CFB:
+                        break;
+                    case OFB:
                         break;
                     default:
                         break;
