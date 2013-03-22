@@ -27,6 +27,31 @@ namespace cipheruwet
             return c;
         }
 
+        private static byte[] PadByteArray(byte[] source, int length = 16, byte pad = 0)
+        {
+            byte[] paddedByteArray = new byte[length];
+            for (int i = 0; i < length; i++)
+            {
+                if (i < source.Length)
+                    paddedByteArray[i] = source[i];
+                else
+                    paddedByteArray[i] = pad;
+            }
+
+            return paddedByteArray;
+        }
+
+        private static byte[] CropByteArray(byte[] source, long length)
+        {
+            byte[] croppedByteArray = new byte[length];
+            for (int i = 0; i < length; i++)
+            {
+                croppedByteArray[i] = source[i];
+            }
+
+            return croppedByteArray;
+        }
+
         /// <summary>
         /// Encrypt a given source file and save it to a given target file.
         /// </summary>
@@ -35,7 +60,7 @@ namespace cipheruwet
         /// <param name="key">The key to encrypt with</param>
         /// <param name="mode">The mode of encryption. Use Engine.* constants.</param>
         /// <param name="blockSize">The chosen block size.</param>
-        public static void StartEncryption(String sourceFileName, String destinationFileName, String key, byte mode, int blockSize)
+        public static void StartEncryption(String sourceFileName, String destinationFileName, String key, byte mode, int blockSize = 16)
         {
             if (mode != ECB && mode != CBC && mode != CFB && mode != OFB)
             {
@@ -43,8 +68,6 @@ namespace cipheruwet
             }
 
             // Auxiliary variables
-            blockSize = 128;
-            int blockSizeInBytes = blockSize / 8;
             byte[] crlf = { Convert.ToByte('\r'), Convert.ToByte('\n') };
             char[] keyChars = key.ToCharArray();
             byte[] keyBytes = new byte[key.Length];
@@ -65,25 +88,25 @@ namespace cipheruwet
 
             // The header consists of the following bytes:
             //  1-8  Original file length
-            //  9    Block size
-            // 10    Block cipher mode of operation
-            // 11-12 CRLF
-            // 13-.. Initialization vector (according to blocksize)
+            //  9-12 Block size
+            // 13    Block cipher mode of operation
+            // 14-15 CRLF
+            // 16-.. Initialization vector (according to blocksize)
             // ..-.. CRLF
 
-            long originalLength = Convert.ToInt64(fr.Length);
+            Int64 originalLength = Convert.ToInt64(fr.Length);
             Console.WriteLine(originalLength.ToString("X8"));
             bw.Write(originalLength);
 
-            byte blockSizeByte = Convert.ToByte(blockSize);
-            bw.Write(blockSizeByte);
+            Int32 blockSizeField = Convert.ToInt32(blockSize);
+            bw.Write(blockSizeField);
 
             bw.Write(mode);
 
             bw.Write(crlf);
 
             Random iv = new Random();
-            byte[] initializationVector = new byte[blockSizeInBytes];
+            byte[] initializationVector = new byte[blockSize];
             iv.NextBytes(initializationVector);
             bw.Write(initializationVector);
 
@@ -95,6 +118,7 @@ namespace cipheruwet
             long pos = 0;
             long length = fr.Length;
             byte[] readBuffer;
+            byte[] paddedBuffer;
             BlockCipheruwet Cipher;
 
             byte[] previousBlock = (byte[])initializationVector.Clone();
@@ -102,16 +126,17 @@ namespace cipheruwet
             while (pos < length)
             {
                 // Load one block into buffer
-                readBuffer = br.ReadBytes(blockSizeInBytes);
+                readBuffer = br.ReadBytes(blockSize);
+                paddedBuffer = PadByteArray(readBuffer, blockSize);
 
                 switch (mode)
                 {
                     case ECB:
-                        Cipher = new BlockCipheruwet(readBuffer, keyBytes);
+                        Cipher = new BlockCipheruwet(paddedBuffer, keyBytes);
                         bw.Write(Cipher.encrypt());
                         break;
                     case CBC:
-                        byte[] preEncrypt = XorByteArray(readBuffer, previousBlock);
+                        byte[] preEncrypt = XorByteArray(paddedBuffer, previousBlock);
                         Cipher = new BlockCipheruwet(preEncrypt, keyBytes);
                         byte[] ciphertext = Cipher.encrypt();
                         bw.Write(ciphertext);
@@ -122,10 +147,8 @@ namespace cipheruwet
                         break;
                 }
 
-                pos += blockSizeInBytes;
+                pos += blockSize;
             }
-
-            // Write padding
 
             // Body is written.
 
@@ -146,18 +169,115 @@ namespace cipheruwet
         /// <param name="key">The key to decrypt with.</param>
         public static void StartDecryption(String sourceFileName, String destinationFileName, String key)
         {
+            // Auxiliary variables
+            int readPos = 0; // Reading position
+            Int64 originalFileSize = 0; // Original file size
+            Int64 remainingBody = 0; // Bytes left to read
+            Int32 blockSize = 0;
+            byte cipherMode = 0;
+            byte cr = Convert.ToByte('\r');
+            byte lf = Convert.ToByte('\n');
+            byte[] initializationVector;
+            
+            char[] keyChars = key.ToCharArray();
+            byte[] keyBytes = new byte[key.Length];
+            for (var i = 0; i < key.Length; ++i)
+            {
+                keyBytes[i] = Convert.ToByte(keyChars[i]);
+            }
+
             // Open read handle. Treat all files as binary.
             FileStream fr = File.OpenRead(sourceFileName);
             BinaryReader br = new BinaryReader(fr);
 
             // Open write handle.
-            //FileStream fw = File.OpenWrite(destinationFileName);
-            //BinaryWriter bw = new BinaryWriter(fw);
+            FileStream fw = File.OpenWrite(destinationFileName);
+            BinaryWriter bw = new BinaryWriter(fw);
 
-            long x = br.ReadInt64();
-            Console.WriteLine(x.ToString("X8"));
-            br.Close();
+            // Read header
+
+            // 1. Original filesize
+            originalFileSize = br.ReadInt64();
+            readPos += sizeof(Int64);
+
+            // 2. Block size
+            blockSize = br.ReadInt32();
+            readPos += sizeof(Int32);
+
+            // 3. Cipher mode
+            cipherMode = br.ReadByte();
+            readPos += sizeof(byte);
+
+            // 4. CRLF -- validate their existence
+            if (br.ReadByte() != cr)
+                throw new Exception("Invalid ciphertext header.");
+            readPos += sizeof(byte);
+
+            if (br.ReadByte() != lf)
+                throw new Exception("Invalid ciphertext header.");
+            readPos += sizeof(byte);
+            
+            // 5. Initialization vector
+            initializationVector = br.ReadBytes(blockSize);
+            readPos += blockSize;
+
+            // 6. CRLF again -- validate their existence
+            if (br.ReadByte() != cr)
+                throw new Exception("Invalid ciphertext header.");
+            readPos += sizeof(byte);
+
+            if (br.ReadByte() != lf)
+                throw new Exception("Invalid ciphertext header.");
+            readPos += sizeof(byte);
+
+            // We're done with the header, we can now proceed to the body.
+
+            remainingBody = originalFileSize;
+
+            while (readPos < fr.Length)
+            {
+                byte[] cipherBuffer = br.ReadBytes(blockSize);
+                byte[] toWrite = new byte[blockSize];
+
+                // Decrypt the buffer and write to destination file
+                switch (cipherMode)
+                {
+                    case ECB:
+                        BlockCipheruwet Cipher = new BlockCipheruwet(cipherBuffer, keyBytes);
+                        byte[] plainBuffer = Cipher.decrypt();
+                        toWrite = plainBuffer;
+                        break;
+                    case CBC:
+                        break;
+                    default:
+                        break;
+                }
+
+                if (remainingBody < blockSize)
+                {
+                    byte[] writeBuffer = new byte[remainingBody];
+                    Array.Copy(toWrite, writeBuffer, (int)remainingBody);
+
+                    bw.Write(writeBuffer);
+                }
+                else
+                {
+                    bw.Write(toWrite);
+                }
+
+                readPos += blockSize;
+                remainingBody -= blockSize;
+            }
+
             // Mode is read from the header of the file
+
+            // Close write handle
+            bw.Close();
+            fw.Close();
+
+            // Close read handle
+            br.Close();
+            fr.Close();
         }
     }
 }

@@ -135,7 +135,7 @@ namespace cipheruwet
                         throw new Exception("Invalid mode of operation.");
                 }
 
-                Engine.StartEncryption(sourceFileName, destinationFileName, key, cipherMode, 64);
+                Engine.StartEncryption(sourceFileName, destinationFileName, key, cipherMode);
             }
             catch (Exception ex)
             {
