@@ -41,17 +41,6 @@ namespace cipheruwet
             return paddedByteArray;
         }
 
-        private static byte[] CropByteArray(byte[] source, long length)
-        {
-            byte[] croppedByteArray = new byte[length];
-            for (int i = 0; i < length; i++)
-            {
-                croppedByteArray[i] = source[i];
-            }
-
-            return croppedByteArray;
-        }
-
         /// <summary>
         /// Encrypt a given source file and save it to a given target file.
         /// </summary>
@@ -69,11 +58,17 @@ namespace cipheruwet
 
             // Auxiliary variables
             byte[] crlf = { Convert.ToByte('\r'), Convert.ToByte('\n') };
+
+            // Key processing
             char[] keyChars = key.ToCharArray();
-            byte[] keyBytes = new byte[key.Length];
-            for (var i = 0; i < key.Length; ++i)
+            int keyLength = Math.Max(key.Length, BlockCipheruwetEnDc.SIZE);
+            byte[] keyBytes = new byte[keyLength];
+            for (var i = 0; i < keyLength; ++i)
             {
-                keyBytes[i] = Convert.ToByte(keyChars[i]);
+                if (i < key.Length)
+                    keyBytes[i] = Convert.ToByte(keyChars[i]);
+                else
+                    keyBytes[i] = 0;
             }
 
             // Open read handle. Treat all files as binary.
@@ -193,12 +188,16 @@ namespace cipheruwet
             byte cr = Convert.ToByte('\r');
             byte lf = Convert.ToByte('\n');
             byte[] initializationVector;
-            
+
             char[] keyChars = key.ToCharArray();
-            byte[] keyBytes = new byte[key.Length];
-            for (var i = 0; i < key.Length; ++i)
+            int keyLength = Math.Max(key.Length, BlockCipheruwetEnDc.SIZE);
+            byte[] keyBytes = new byte[keyLength];
+            for (var i = 0; i < keyLength; ++i)
             {
-                keyBytes[i] = Convert.ToByte(keyChars[i]);
+                if (i < key.Length)
+                    keyBytes[i] = Convert.ToByte(keyChars[i]);
+                else
+                    keyBytes[i] = 0;
             }
 
             // Open read handle. Treat all files as binary.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -61,6 +62,7 @@ namespace cipheruwet
         private void browseUnencryptedFileButton_Click(object sender, RoutedEventArgs e)
         {
             ShowOpenDialog(unencryptedFileName);
+            encryptionDestinationFileName.Text = unencryptedFileName.Text + ".bin";
         }
 
         private void browseEncryptedFileButton_Click(object sender, RoutedEventArgs e)
@@ -136,13 +138,20 @@ namespace cipheruwet
                 }
 
                 Engine.StartEncryption(sourceFileName, destinationFileName, key, cipherMode);
+
+                ShowMessageBox("Encryption completed.", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                decryptionKey.Text = key;
+                encryptedFileName.Text = destinationFileName;
+                if (decryptionDestinationFileName.Text == "")
+                    decryptionDestinationFileName.Text = sourceFileName;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("\nMessage ---\n{0}", ex.Message);
-                Console.WriteLine("\nHelpLink ---\n{0}", ex.HelpLink);
-                Console.WriteLine("\nSource ---\n{0}", ex.Source);
-                Console.WriteLine("\nStackTrace ---\n{0}", ex.StackTrace);
+                Debug.WriteLine("\nMessage ---\n{0}", ex.Message);
+                Debug.WriteLine("\nHelpLink ---\n{0}", ex.HelpLink);
+                Debug.WriteLine("\nSource ---\n{0}", ex.Source);
+                Debug.WriteLine("\nStackTrace ---\n{0}", ex.StackTrace);
                 ShowMessageBox(ex.Message);
             }
         }
@@ -156,10 +165,16 @@ namespace cipheruwet
                 string key = decryptionKey.Text;
 
                 Engine.StartDecryption(sourceFileName, destinationFileName, key);
+
+                ShowMessageBox("Decryption completed.", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                ShowMessageBox(exc.Message);
+                Debug.WriteLine("\nMessage ---\n{0}", ex.Message);
+                Debug.WriteLine("\nHelpLink ---\n{0}", ex.HelpLink);
+                Debug.WriteLine("\nSource ---\n{0}", ex.Source);
+                Debug.WriteLine("\nStackTrace ---\n{0}", ex.StackTrace);
+                ShowMessageBox(ex.Message);
             }
         }
 
