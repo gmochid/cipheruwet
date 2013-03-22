@@ -128,6 +128,7 @@ namespace cipheruwet
                 // Load one block into buffer
                 readBuffer = br.ReadBytes(blockSize);
                 paddedBuffer = PadByteArray(readBuffer, blockSize);
+                byte[] cipherBuffer;
 
                 switch (mode)
                 {
@@ -138,9 +139,18 @@ namespace cipheruwet
                     case CBC:
                         byte[] preEncrypt = XorByteArray(paddedBuffer, previousBlock);
                         Cipher = new BlockCipheruwet(preEncrypt, keyBytes);
-                        byte[] ciphertext = Cipher.encrypt();
-                        bw.Write(ciphertext);
-                        previousBlock = (byte[])ciphertext.Clone();
+                        cipherBuffer = Cipher.encrypt();
+                        bw.Write(cipherBuffer);
+                        Array.Copy(cipherBuffer, previousBlock, blockSize);
+                        break;
+                    case CFB:
+                        Cipher = new BlockCipheruwet(previousBlock, keyBytes);
+                        byte[] preXor = Cipher.encrypt();
+                        cipherBuffer = XorByteArray(preXor, paddedBuffer);
+                        bw.Write(cipherBuffer);
+                        Array.Copy(cipherBuffer, previousBlock, blockSize);
+                        break;
+                    case OFB:
                         break;
                     default:
                         bw.Write(readBuffer);
@@ -240,6 +250,7 @@ namespace cipheruwet
                 byte[] cipherBuffer = br.ReadBytes(blockSize);
                 byte[] toWrite = new byte[blockSize];
                 byte[] plainBuffer;
+                byte[] preXor;
                 BlockCipheruwet Cipher;
 
                 // Decrypt the buffer and write to destination file
@@ -252,12 +263,17 @@ namespace cipheruwet
                         break;
                     case CBC:
                         Cipher = new BlockCipheruwet(cipherBuffer, keyBytes);
-                        byte[] preXor = Cipher.decrypt();
+                        preXor = Cipher.decrypt();
                         plainBuffer = XorByteArray(preXor, previousBlock);
                         toWrite = plainBuffer;
                         previousBlock = cipherBuffer;
                         break;
                     case CFB:
+                        Cipher = new BlockCipheruwet(previousBlock, keyBytes);
+                        preXor = Cipher.encrypt();
+                        plainBuffer = XorByteArray(preXor, cipherBuffer);
+                        toWrite = plainBuffer;
+                        previousBlock = cipherBuffer;
                         break;
                     case OFB:
                         break;
